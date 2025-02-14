@@ -1,12 +1,15 @@
-import "dotenv/config";
-import postgres from 'postgres';
+import 'dotenv/config';
+import { createPool } from 'mysql2/promise';
 
-const sql = postgres(process.env.DATABASE_URL as string, {
-  // host                 : '',            // Postgres ip address[s] or domain name[s]
-  // port                 : 5432,          // Postgres server port[s]
-  // database             : '',            // Name of database to connect to
-  // username             : '',            // Username of database user
-  // password             : '',            // Password of database user
-})
+const pool = createPool({
+  host: process.env.DB_HOST,       // e.g., 'localhost'
+  port: +(process.env.DB_PORT || 3306),
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 
-export default sql;
+export default pool;

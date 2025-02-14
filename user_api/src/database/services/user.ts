@@ -1,57 +1,100 @@
-import sql from "../database.js";
-import { Role } from "../../models/role.js";
+import postgres, { Error } from "postgres";
+import { compareSync } from "bcrypt-ts";
+
+import pool from "../database.js";
 import { User } from "../../models/user.js";
-import { Error } from "postgres";
+import NotFoundError from "../../models/errors/not-found-error.js";
+import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
-export async function listUsers() {
-    try {
-      return await sql`SELECT * FROM _user;`;
-    } catch (error) {
-      return await error;
-    } 
+
+export async function getAllUsers() {
+  let users: Array<User> = [];
+  const [dbUsers] = await pool.execute<RowDataPacket[]>(
+    'SELECT * FROM user'
+  );
+  dbUsers.forEach(dbUser => {
+    const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password);
+    users.push(user);
+  });
+  return users;
 }
 
-export async function getUser(id: number) {
-  try {
-    return await sql`SELECT * FROM _user WHERE id = ${id};`;
-  } catch (error) {
-    return await error;
-  } 
-}
-
-export async function login(username: string, password: string): Promise<User | Error> {
-  try {
-    const dbUser = (await sql`SELECT * FROM _user WHERE (username = ${username} OR email = ${username}) AND password = ${password};`)[0];
-    const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password, dbUser.xp, dbUser._role);
+export async function getUser(id: number): Promise<User> {
+  const [rows] = await pool.execute<RowDataPacket[]>('SELECT * FROM user WHERE id = ?', [id]);
+  if (rows.length > 0) {
+    const dbUser = rows[0];
+    const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password);
     return user;
-  } catch (error: any) {
-    return await error;
-  } 
+  } else {
+    throw new NotFoundError({ message: "No user with this ID found.", logging: true });
+  }
 }
 
-export async function createUser(email: string, username: string, password: string, role: Role): Promise<User> {
+export async function logIn(username: string, password: string): Promise<User> {
+  // Query the database for the user using the username
+  const [dbUsers] = await pool.execute<RowDataPacket[]>(
+    'SELECT * FROM user WHERE username = ?',
+    [username]
+  );
 
-    const dbUser = (await sql`INSERT INTO _user (email, username, password, _role) VALUES (${email}, ${username}, ${password}, ${Role[role]}) returning *;`)[0];
-    const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password, dbUser.xp, dbUser._role);
-    return user;
+  if (dbUsers.length === 0) {
+    throw new NotFoundError({ message: "Wrong credentials.", logging: true });
+  }
+
+  const dbUser = dbUsers[0];
+
+  // Debug logging - remove or mask sensitive details in production!
+  console.log(`Provided password: ${password}, Hashed password: ${dbUser.password}`);
+
+  if (!compareSync(password, dbUser.password)) {
+    throw new NotFoundError({ message: "Wrong credentials.", logging: true });
+  }
+
+  const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password);
+  return user;
 }
 
-export async function removeUser(id: number) {
-  try {
-    const dbUser = (await sql` DELETE FROM _user WHERE id = ${id} returning *;`)[0];
-    const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password, dbUser.xp, dbUser._role);
-    return user;
-  } catch (error) {
-    return await error;
-  } 
+export async function createUser(email: string, username: string, password: string): Promise<User> {
+  const [result] = await pool.execute<ResultSetHeader>(
+    'INSERT INTO user (email, username, password) VALUES (?, ?, ?)',
+    [email, username, password]
+  );
+  const insertedId = result.insertId;
+  const [rows] = await pool.execute<RowDataPacket[]>(
+    'SELECT * FROM user WHERE id = ?',
+    [insertedId]
+  );
+  const dbUser = rows[0];
+  const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password);
+  return user;
 }
 
-export async function updateUser(id: number, email: string, username: string, password: string, role: Role) {
-  try {
-    const dbUser = (await sql` DELETE FROM _user WHERE id = ${id} returning *;`)[0];
-    const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password, dbUser.xp, dbUser._role);
+export async function deleteUser(id: number): Promise<User> {
+  const [rows] = await pool.execute<RowDataPacket[]>('SELECT * FROM user WHERE id = ?', [id]);
+  if (rows.length > 0) {
+    const dbUser = rows[0];
+    await pool.execute('DELETE FROM user WHERE id = ?', [id]);
+    const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password);
     return user;
-  } catch (error) {
-    return await error;
-  } 
+  } else {
+    throw new NotFoundError({ message: "User not found.", logging: true });
+  }
+}
+
+export async function updateUser(id: number, email: string, username: string, password: string): Promise<User> {
+  const [result] = await pool.execute<ResultSetHeader>(
+    'UPDATE user SET email = ?, username = ?, password = ? WHERE id = ?',
+    [email, username, password, id]
+  );
+  if (result.affectedRows > 0) {
+    const [rows] = await pool.execute<RowDataPacket[]>(
+      'SELECT * FROM user WHERE id = ?',
+      [id]
+    );
+    const dbUser = rows[0];
+    const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password);
+    return user;
+  } else {
+    throw new NotFoundError({ message: "User not found.", logging: true });
+  }
 }

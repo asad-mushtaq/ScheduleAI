@@ -1,0 +1,19 @@
+# ignored options for 'mariadb'
+# --detach
+name: db
+services:
+    mariadb:
+        container_name: some-mariadb
+        environment:
+            - MARIADB_USER=ai
+            - MARIADB_PASSWORD=password
+            - MARIADB_DATABASE=db
+            - MARIADB_ROOT_PASSWORD=my-secret-pw
+        image: mariadb:latest
+
+
+# To use run below line in this directory.
+# docker compose up -d 
+
+# This to access command.
+# docker exec -it some-mariadb mariadb -u ai -p db

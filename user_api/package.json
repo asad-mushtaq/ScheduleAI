@@ -1,0 +1,22 @@
+{
+  "name": "auth_service",
+  "version": "1.0.0",
+  "description": "Authentication microservice.",
+  "main": "src/app.ts",
+  "scripts": {
+    "start": "tsc && node ./dist/main.js"
+  },
+  "author": "Shayan Zahedanaraki",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^22.9.0"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "postgres": "^3.4.5"
+  }
+}

@@ -17,7 +17,7 @@ export async function startApi() {
 
   app.delete(routeUri + "/:id", controller.deleteUser);
 
-  app.patch(routeUri + "/:id", controller.editUser);
+  app.patch(routeUri, controller.editUser);
 
   app.post(routeUri, controller.createUser);
 

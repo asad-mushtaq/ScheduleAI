@@ -55,8 +55,9 @@ export async function getAllUsers(req: Request, res: Response): Promise<void> {
 export async function editUser(req: Request, res: Response): Promise<void> {
 	try {
 		res.setHeader('Content-Type', 'application/json');
-		const id = verifyId(req.params.id);
-		const user = await service.getUser(id) as User;
+		const salt = genSaltSync(10);
+		const hash = hashSync(req.body.password, salt);
+		const user = await service.updateUser(req.body.id, req.body.email, req.body.username, hash) as User;
 		res.json(user);
 	} catch (error) {
 		errorHandler(error as Error, res);

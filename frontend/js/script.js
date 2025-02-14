@@ -9,7 +9,7 @@ function signUp() {
         const userData = { fullName, email, username, password };
         localStorage.setItem("user", JSON.stringify(userData));
         alert("Sign up successful! You can now log in.");
-        window.location.href = "profile.html";
+        window.location.href = "login.html";
     } else {
         alert("Please fill in all fields.");
     }

@@ -1,6 +1,6 @@
 
-import BadRequestError from "../../models/errors/bad-request-error.js";
-import { stringToInteger } from "../../services/converters.js";
+import BadRequestError from "../models/errors/bad-request-error.js";
+import { stringToInteger } from "../services/converters.js";
 
 export function verifyId(id: string): number {
     try {

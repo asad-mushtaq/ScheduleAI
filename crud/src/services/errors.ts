@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { CustomError } from "../../models/errors/custom-error.js";
+import { CustomError } from "../models/errors/custom-error.js";
 
 export function errorHandler(err: Error, res: Response) {
   // Handled errors
@@ -13,7 +13,6 @@ export function errorHandler(err: Error, res: Response) {
         stack: err.stack,
       }, null, 2));
     }
-
     return res.status(statusCode).send({ errors });
   }
   console.log("Unhandled Error!!!!");

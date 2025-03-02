@@ -2,27 +2,18 @@ import express, { NextFunction, Request, Response } from 'express';
 import "dotenv/config";
 import bodyParser from "body-parser";
 import "express-async-errors";
-import { errorHandler } from './middlewares/errors.js';
-import * as controller from './controller.js';
+import { routes } from './routes/index.js';
+import * as controller from './controllers/users.js';
 
 const jsonParser = bodyParser.json();
 const routeUri = "/api/v1/users";
 
 export async function startApi() {
   const app = express();
-
+  
   app.use(jsonParser);
-
-  app.get(routeUri + "/:id", controller.getUserById);
-
-  app.delete(routeUri + "/:id", controller.deleteUser);
-
-  app.patch(routeUri, controller.editUser);
-
-  app.post(routeUri, controller.createUser);
-
-  // admin
-  app.get(routeUri, controller.getAllUsers);
+  app.use(jsonParser);
+  app.use('/', routes);
   // app.use(errorHandler);
 
   if (process.env.PORT === undefined) {

@@ -1,4 +1,3 @@
-import postgres, { Error } from "postgres";
 import { compareSync } from "bcrypt-ts";
 
 import pool from "../database.js";

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { genSaltSync, hashSync } from "bcrypt-ts";
 
-import { User } from "../../models/user.js"
-import { errorHandler } from '../../services/errors.js';
-import * as service from "../../database/crud/user.js"
-import { verifyId } from '../../services/verify-params.js';
+import { User } from "../models/user.js"
+import { errorHandler } from '../services/errors.js';
+import * as service from "../database/crud/user.js"
+import { verifyId } from '../services/verify-params.js';
 
 
 export async function createUser(req: Request, res: Response): Promise<void> {

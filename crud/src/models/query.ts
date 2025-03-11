@@ -1,8 +1,8 @@
-export class OpenaiQuery {
+export class Query {
     private _id: number;
     private _userId: number;
     private _date: Date;
-    private _query: string;
+    private _prompt: string;
     private _response: string;
   
     public get id(): number {
@@ -17,8 +17,8 @@ export class OpenaiQuery {
         return this._date;
     }
   
-    public get query(): string {
-      return this._query;
+    public get prompt(): string {
+      return this._prompt;
     }
   
     public get response(): string {
@@ -29,13 +29,13 @@ export class OpenaiQuery {
       id: number,
       _userId: number,
       _date: Date,
-      _query: string,
+      _prompt: string,
       _response: string,
     ) {
       this._id = id;
       this._userId = _userId;
       this._date = _date;
-      this._query = _query;
+      this._prompt = _prompt;
       this._response = _response;
     }
   }

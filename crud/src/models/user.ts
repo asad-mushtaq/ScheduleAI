@@ -1,7 +1,8 @@
 export class User {
   private _id: number;
+  private _firstName: string;
+  private _lastName: string;
   private _email: string;
-  private _username: string;
   private _password: string;
 
   public get id(): number {
@@ -15,11 +16,18 @@ export class User {
     this._email = value;
   }
 
-  public get username(): string {
-    return this._username;
+  public get firstName(): string {
+    return this._firstName;
   }
-  public set username(value: string) {
-    this._username = value;
+  public set firstName(value: string) {
+    this._firstName = value;
+  }
+
+  public get lastName(): string {
+    return this._lastName;
+  }
+  public set lastName(value: string) {
+    this._lastName = value;
   }
 
   public get password(): string {
@@ -30,14 +38,16 @@ export class User {
   }
 
   constructor(
-    id: number,
-    email: string,
-    username: string,
-    password: string,
+    _id: number,
+    _firstName: string,
+    _lastName: string,
+    _email: string,
+    _password: string,
   ) {
-    this._id = id;
-    this._email = email;
-    this._username = username;
-    this._password = password;
+    this._id = _id;
+    this._firstName = _firstName;
+    this._lastName = _lastName;
+    this._email = _email;
+    this._password = _password;
   }
 }

@@ -12,7 +12,7 @@ export async function getAllUsers() {
     'SELECT * FROM user'
   );
   dbUsers.forEach(dbUser => {
-    const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password);
+    const user: User = new User(dbUser.id, dbUser.firstName, dbUser.lastName, dbUser.email, dbUser.password);
     users.push(user);
   });
   return users;
@@ -22,7 +22,7 @@ export async function getUser(id: number): Promise<User> {
   const [rows] = await pool.execute<RowDataPacket[]>('SELECT * FROM user WHERE id = ?', [id]);
   if (rows.length > 0) {
     const dbUser = rows[0];
-    const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password);
+    const user: User = new User(dbUser.id, dbUser.firstName, dbUser.lastName, dbUser.email, dbUser.password);
     return user;
   } else {
     throw new NotFoundError({ message: "No user with this ID found.", logging: true });
@@ -49,7 +49,7 @@ export async function logIn(username: string, password: string): Promise<User> {
     throw new NotFoundError({ message: "Wrong credentials.", logging: true });
   }
 
-  const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password);
+  const user: User = new User(dbUser.id, dbUser.firstName, dbUser.lastName, dbUser.email, dbUser.password);
   return user;
 }
 
@@ -64,7 +64,7 @@ export async function createUser(email: string, username: string, password: stri
     [insertedId]
   );
   const dbUser = rows[0];
-  const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password);
+  const user: User = new User(dbUser.id, dbUser.firstName, dbUser.lastName, dbUser.email, dbUser.password);
   return user;
 }
 
@@ -73,7 +73,7 @@ export async function deleteUser(id: number): Promise<User> {
   if (rows.length > 0) {
     const dbUser = rows[0];
     await pool.execute('DELETE FROM user WHERE id = ?', [id]);
-    const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password);
+    const user: User = new User(dbUser.id, dbUser.firstName, dbUser.lastName, dbUser.email, dbUser.password);
     return user;
   } else {
     throw new NotFoundError({ message: "User not found.", logging: true });
@@ -91,7 +91,7 @@ export async function updateUser(id: number, email: string, username: string, pa
       [id]
     );
     const dbUser = rows[0];
-    const user: User = new User(dbUser.id, dbUser.email, dbUser.username, dbUser.password);
+    const user: User = new User(dbUser.id, dbUser.firstName, dbUser.lastName, dbUser.email, dbUser.password);
     return user;
   } else {
     throw new NotFoundError({ message: "User not found.", logging: true });

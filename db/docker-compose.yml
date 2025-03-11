@@ -3,7 +3,7 @@
 name: db
 services:
     mariadb:
-        container_name: some-mariadb
+        container_name: schedule-ai-db
         environment:
             - MARIADB_USER=ai
             - MARIADB_PASSWORD=password

@@ -50,6 +50,7 @@ export async function getEventTasks(eventId: number): Promise<Array<Task>> {
 }
 
 export async function createEvent(userId: number, name: string, description: string, startDate: Date, length: number): Promise<Event> {
+  console.log(userId, name, description, startDate, length)
   const [result] = await pool.execute<ResultSetHeader>(
     'INSERT INTO event (user_id, name, description, start_date, length) VALUES (?, ?, ?, ?, ?)',
     [userId, name, description, startDate, length]

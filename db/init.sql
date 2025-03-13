@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS user (
 
 CREATE TABLE IF NOT EXISTS event (
     id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(20) NOT NULL UNIQUE,
+    name VARCHAR(20) NOT NULL,
     description TEXT,
     start_date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     length VARCHAR(100) NOT NULL,
@@ -37,7 +37,8 @@ CREATE TABLE IF NOT EXISTS task (
     completed BOOLEAN DEFAULT false NOT NULL,
     event_id INT NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (event_id) REFERENCES event(id)
+    FOREIGN KEY (event_id) REFERENCES event(id),
+    CONSTRAINT unique_name_event UNIQUE (name, event_id)
 );
 
 

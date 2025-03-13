@@ -23,7 +23,7 @@ export async function createUser(req: Request, res: Response): Promise<void> {
 export async function logIn(req: Request, res: Response): Promise<void>  {
     try {
         // Load hash from your password DB.
-        const user = await service.logIn(req.body.username, req.body.password) as User;
+        const user = await service.logIn(req.body.email, req.body.password) as User;
         res.json(user);
     } catch (error) {
         errorHandler(error as Error, res);

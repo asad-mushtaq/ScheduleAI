@@ -30,6 +30,28 @@ export class Subscription {
     public set queryLimit(value: number) {
       this._queryLimit = value;
     }
+
+    toJSON() {
+      const proto = Object.getPrototypeOf(this);
+      const jsonObj: any = {};
+      Object.entries(this).forEach(([key, value]) => {
+        if (key[0] !== '_') {
+          jsonObj[key] = value;
+        }
+      });
+      Object.entries(Object.getOwnPropertyDescriptors(proto))
+        .filter(([key, descriptor]) => typeof descriptor.get === 'function' && key[0] !== '_')
+        .forEach(([key, descriptor]) => {
+          try {
+            const val = (this as any)[key];
+            jsonObj[key] = val;
+          } catch (error) {
+            console.error(`Error calling getter ${key}`, error);
+          }
+        });
+    
+      return jsonObj;
+    }
   
     constructor(
       id: number,

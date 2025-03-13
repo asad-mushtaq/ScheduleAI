@@ -17,6 +17,5 @@ export function errorHandler(err: Error, res: Response) {
   }
   console.log("Unhandled Error!!!!");
   // Unhandled errors
-  console.error(JSON.stringify(err, null, 2));
-  return res.status(500).send({ errors: [{ message: "Something went wrong" }] });
+  return res.status(500).send({ errors: [{ message: err.message }] });
 }

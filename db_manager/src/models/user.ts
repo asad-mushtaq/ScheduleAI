@@ -9,13 +9,6 @@ export class User {
     return this._id;
   }
 
-  public get email(): string {
-    return this._email;
-  }
-  public set email(value: string) {
-    this._email = value;
-  }
-
   public get firstName(): string {
     return this._firstName;
   }
@@ -30,11 +23,40 @@ export class User {
     this._lastName = value;
   }
 
+  public get email(): string {
+    return this._email;
+  }
+  public set email(value: string) {
+    this._email = value;
+  }
+
   public get password(): string {
     return this._password;
   }
   public set password(value: string) {
     this._password = value;
+  }
+
+  toJSON() {
+    const proto = Object.getPrototypeOf(this);
+    const jsonObj: any = {};
+    Object.entries(this).forEach(([key, value]) => {
+      if (key[0] !== '_') {
+        jsonObj[key] = value;
+      }
+    });
+    Object.entries(Object.getOwnPropertyDescriptors(proto))
+      .filter(([key, descriptor]) => typeof descriptor.get === 'function' && key[0] !== '_')
+      .forEach(([key, descriptor]) => {
+        try {
+          const val = (this as any)[key];
+          jsonObj[key] = val;
+        } catch (error) {
+          console.error(`Error calling getter ${key}`, error);
+        }
+      });
+  
+    return jsonObj;
   }
 
   constructor(

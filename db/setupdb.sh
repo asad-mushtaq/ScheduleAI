@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! -f /setupran ]; then
+if [ ! -f /installran ]; then
     echo "File not found!"
 
     export DEBIAN_FRONTEND="noninteractive"
@@ -13,13 +13,17 @@ if [ ! -f /setupran ]; then
 
     sleep 2
 
-    mariadb -u root -p$ROOTPASSWORD -e "CREATE USER '$DBUSER'@'%%' IDENTIFIED BY '$PASSWORD'; GRANT ALL PRIVILEGES ON *.* TO '$DBUSER'@'%%' identified by '$PASSWORD'; FLUSH PRIVILEGES;"
+    if [ ! -f /var/lib/mysql/setupran ]; then 
+        mariadb -u root -p$ROOTPASSWORD -e "CREATE USER '$DBUSER'@'%%' IDENTIFIED BY '$PASSWORD'; GRANT ALL PRIVILEGES ON *.* TO '$DBUSER'@'%%' identified by '$PASSWORD'; FLUSH PRIVILEGES;"
 
-    mariadb -u root -p$ROOTPASSWORD -e "CREATE DATABASE $DATABASE"
+        mariadb -u root -p$ROOTPASSWORD -e "CREATE DATABASE IF NOT EXISTS $DATABASE"
 
-    mariadb -u root -p$ROOTPASSWORD -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO $DBUSER@'%%';"
+        mariadb -u root -p$ROOTPASSWORD -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO $DBUSER@'%%';"
 
-    mysql -u $DBUSER -p$PASSWORD $DATABASE < ./init.sql
+        mysql -u $DBUSER -p$PASSWORD $DATABASE < ./init.sql
+
+        touch /setupran
+    fi
 
     service mariadb stop
 
@@ -27,7 +31,7 @@ if [ ! -f /setupran ]; then
 
     sed -n -i '/bind-address/!p' /etc/mysql/mariadb.conf.d/50-server.cnf
 
-    touch /setupran
+    touch /installran
 fi
 
 /usr/bin/mysqld_safe

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScheduleAI - Calendar</title>
+
+    <!-- FullCalendar CSS -->
+    <link rel="stylesheet"  href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <nav>
+        <a href="home">Home</a>
+        <a onclick="logout()">Sign Out</a>
+        <a href="profile">Profile</a>
+    </nav>
+
+    <div class="container">
+        <h1>ScheduleAI</h1>
+
+        <!-- Event Creation Form -->
+        <div id="event-container">
+            <h2>Create Event</h2>
+            <input type="text" id="event-name" placeholder="Event Name">
+            <input type="text" id="event-description" placeholder="Event Description">
+            <input type="date" id="event-date">
+            <input type="number" id="event-length" placeholder="Event Length (Hours)">
+            <button id="create-event">Create Event</button>
+        </div>
+
+        <!-- Calendar -->
+        <div id="calendar-container">
+            <h2>Calendar</h2>
+            <div id="calendar"></div>
+        </div>
+
+        <!-- Task Input Section (Hidden by Default) -->
+        <div id="task-input-section" style="display: none;">
+            <h2>Manage Tasks for <span id="selected-event-name"></span></h2>
+            <input type="text" id="task-name" placeholder="Enter a task name">
+            <input type="text" id="task-description" placeholder="Enter a task description">
+            <button id="add-task">Add Task</button>
+            <button id="view-event-details">View Event Details</button>
+            <ul id="task-list"></ul>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
+
+    <script src="js/eventTask.js"></script>
+    <script src="js/script.js"></script>
+
+</body>
+</html>

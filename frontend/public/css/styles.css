@@ -1,0 +1,48 @@
+/* Fix Navigation Bar */
+nav {
+    background: #007bff;
+    padding: 1em;
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+nav a {
+    display: inline-block; /* Fix so links appear in a row */
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    padding: 10px 15px;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+/* Add margin to fix overlapping with navbar */
+.container {
+    margin-top: 80px; /* Push content down */
+}
+
+#calendar-container {
+    max-width: 800px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#calendar {
+    height: 500px; /* Ensures calendar is visible */
+    width: 100%;
+    display: block; /* Ensures it's not hidden */
+}
+
+

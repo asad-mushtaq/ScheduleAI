@@ -5,11 +5,17 @@ import "express-async-errors";
 import { routes } from './routes/index.js';
 
 const jsonParser = bodyParser.json();
-const routeUri = "/api/v1/users";
+const app = express();
+  
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, PATCH");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 export async function startApi() {
-  const app = express();
-  
+
   app.use(jsonParser);
   app.use(jsonParser);
   app.use('/', routes);

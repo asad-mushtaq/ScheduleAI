@@ -8,8 +8,8 @@ import { verifyId } from '../services/verify-params.js';
 export async function createTask(req: Request, res: Response): Promise<void> {
 	try {
 		res.setHeader('Content-Type', 'application/json');
-		const event_id = verifyId(req.body.eventId);
-		const task = await service.createTask(req.body.name, req.body.description, Boolean(JSON.parse(req.body.completed)), event_id);
+		const eventId = verifyId(req.body.eventId);
+		const task = await service.createTask(req.body.name, req.body.description, Boolean(JSON.parse(req.body.completed)), eventId);
 		console.log(task.name);
 		res.json(task);
 	} catch (error) {

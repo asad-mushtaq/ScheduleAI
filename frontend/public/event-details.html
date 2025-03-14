@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Details</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <nav>
+        <a href="home">Home</a>
+        <a onclick="logout()">Sign Out</a>
+        <a href="profile">Profile</a>
+    </nav>
+
+    <div class="container">
+        <h1>Details for <span id="event-name"></span></h1>
+        <p id="event-description"></p>
+        <h2>Tasks:</h2>
+        <input type="text" id="task-name" placeholder="Enter a task name">
+        <input type="text" id="task-description" placeholder="Enter a task description">
+        <button id="add-task">Add Task</button>
+        <button id="view-event-details">View Event Details</button>
+        <ul id="task-list"></ul>
+    </div>
+
+    <script src="js/eventDetails.js"></script>
+
+</body>
+</html>

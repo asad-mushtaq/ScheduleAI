@@ -1,0 +1,45 @@
+
+services:
+  api_gateway:
+    image: nginx
+    volumes:
+      - nginx_vol:/etc/nginx/
+    ports:
+      - "8080:80"
+    environment:
+      - NGINX_HOST=foobar.com
+      - NGINX_PORT=80
+    networks:
+      - scheduleAI_net
+  scheduledb:
+    container_name: scheduledb
+    networks:
+      - scheduleAI_net
+    volumes:
+      - scheduleAI_vol:/var/lib/mysql
+    env_file: ".env"
+    image: scheduledb:latest
+  db_manager:
+    container_name: db_manager
+    networks:
+      - scheduleAI_net
+    env_file: ".env"
+    depends_on:
+      scheduledb:
+        condition: service_healthy
+        restart: true
+    ports:
+      - 3000:3000
+    image: db_manager:latest
+
+networks:
+  scheduleAI_net:
+    external: true
+    name: scheduleAI_net
+volumes:
+  scheduleAI_vol:
+    external: true
+    name: scheduleAI_vol
+  nginx_vol:
+    external: true
+    name: nginx_vol

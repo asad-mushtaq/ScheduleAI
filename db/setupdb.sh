@@ -18,13 +18,13 @@ if [ ! -f /installran ]; then
     sleep 2
 
     if [ ! -f /var/lib/mysql/setupran ]; then 
-        mariadb -u root -p$ROOTPASSWORD -e "CREATE USER '$DBUSER'@'%%' IDENTIFIED BY '$PASSWORD'; FLUSH PRIVILEGES;"
+        mariadb -u root -p$DB_ROOT_PASSWORD -e "CREATE USER '$DB_USER'@'%%' IDENTIFIED BY '$DB_PASSWORD'; FLUSH PRIVILEGES;"
 
-        mariadb -u root -p$ROOTPASSWORD -e "CREATE DATABASE IF NOT EXISTS $DATABASE;"
+        mariadb -u root -p$DB_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;"
 
-        mariadb -u root -p$ROOTPASSWORD -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO $DBUSER@'%%';"
+        mariadb -u root -p$DB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON $DB_NAME.* TO $DB_USER@'%%';"
 
-        mysql -u $DBUSER -p$PASSWORD $DATABASE < ./init.sql
+        mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME < ./init.sql
 
         touch /var/lib/mysql/setupran
     fi

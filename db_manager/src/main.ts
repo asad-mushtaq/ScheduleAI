@@ -21,12 +21,12 @@ export async function startApi() {
   app.use('/', routes);
   // app.use(errorHandler);
 
-  if (process.env.PORT === undefined) {
-    throw new Error("PORT in .env file missing, terminating.");
+  if (process.env.DB_MANAGER_PORT === undefined) {
+    throw new Error("DB_MANAGER_PORT in environment missing, terminating.");
   }
 
-  app.listen(process.env.PORT, () =>
-    console.log(`server running : http://localhost:${process.env.PORT}`),
+  app.listen(process.env.DB_MANAGER_PORT, () =>
+    console.log(`server running : http://localhost:${process.env.DB_MANAGER_PORT}`),
   );
 }
 

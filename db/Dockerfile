@@ -1,8 +1,9 @@
-FROM ubuntu:latest
+FROM ubuntu:24.04
 
 MAINTAINER Shayan Zahedanaraki <shayan.zahedana@gmail.com>
 
-RUN apt-get update
+RUN apt-get clean
+RUN apt-get update --fix-missing 
 RUN apt-get upgrade -y
 
 

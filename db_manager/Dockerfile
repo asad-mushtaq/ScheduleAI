@@ -1,22 +1,23 @@
-FROM ubuntu:latest
+FROM ubuntu:24.04
 
 MAINTAINER Shayan Zahedanaraki <shayan.zahedana@gmail.com>
 
-RUN apt-get update
+RUN apt-get clean
+RUN apt-get update --fix-missing 
 RUN apt-get upgrade -y
+RUN apt-get install nodejs -y
+RUN apt-get install npm -y
+RUN npm i -g typescript -y
 
+RUN mkdir db_manager
 
-
-EXPOSE 3306
+# EXPOSE 3000
 
 LABEL version="1.0"
-LABEL description="ScheduleAI MariaDB Server."
+LABEL description="ScheduleAI Database Manager."
 
-COPY . .
+COPY . ./db_manager
 
-RUN chmod o+rx ./setupdb.sh
+RUN chmod o+rx ./db_manager/setupDbManager.sh
 
-HEALTHCHECK --start-period=5m \
-  CMD mariadb -e 'SELECT @@datadir;' || exit 1
-
-ENTRYPOINT ["./setupdb.sh"]
+ENTRYPOINT ["./db_manager/setupDbManager.sh"]

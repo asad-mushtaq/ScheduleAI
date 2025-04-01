@@ -7,6 +7,10 @@ if [ ! -f /installran ]; then
     debconf-set-selections <<< "mariadb-server mysql-server/root_password password $ROOTPASSWORD"
     debconf-set-selections <<< "mariadb-server mysql-server/root_password_again password $ROOTPASSWORD"
 
+    apt-get clean
+    apt-get update --fix-missing 
+    apt-get upgrade -y
+
     apt-get install -y mariadb-server
 
     service mariadb start
@@ -22,7 +26,7 @@ if [ ! -f /installran ]; then
 
         mysql -u $DBUSER -p$PASSWORD $DATABASE < ./init.sql
 
-        touch /setupran
+        touch /var/lib/mysql/setupran
     fi
 
     service mariadb stop

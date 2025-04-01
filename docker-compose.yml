@@ -1,9 +1,8 @@
-
 services:
   api_gateway:
     image: nginx
     volumes:
-      - nginx_vol:/etc/nginx/
+      - ./nginx:/etc/nginx/
     ports:
       - "8080:80"
     environment:
@@ -11,6 +10,11 @@ services:
       - NGINX_PORT=80
     networks:
       - scheduleAI_net
+    depends_on:
+      scheduledb:
+        condition: service_healthy
+      db_manager:
+        condition: service_started
   scheduledb:
     container_name: scheduledb
     networks:
@@ -27,7 +31,6 @@ services:
     depends_on:
       scheduledb:
         condition: service_healthy
-        restart: true
     ports:
       - 3000:3000
     image: db_manager:latest

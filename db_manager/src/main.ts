@@ -17,9 +17,7 @@ app.use(function(req, res, next) {
 export async function startApi() {
 
   app.use(jsonParser);
-  app.use(jsonParser);
   app.use('/', routes);
-  // app.use(errorHandler);
 
   if (process.env.DB_MANAGER_PORT === undefined) {
     throw new Error("DB_MANAGER_PORT in environment missing, terminating.");

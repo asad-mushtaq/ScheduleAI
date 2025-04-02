@@ -1,11 +1,11 @@
 {
   "name": "auth_service",
   "version": "1.0.0",
-  "description": "Authentication microservice.",
-  "main": "src/app.ts",
+  "description": "Database manager microservice.",
+  "main": "src/main.ts",
   "scripts": {
     "start": "tsc && node ./dist/main.js",
-    "test": "jest"
+    "test": "jest --runInBand --detectOpenHandles --forceExit"
   },
   "author": "Shayan Zahedanaraki",
   "license": "MIT",

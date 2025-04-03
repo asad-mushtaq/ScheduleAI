@@ -40,11 +40,6 @@ export async function verifyJwt(req: MyRequest, res: Response, next: NextFunctio
     try {
         const secret: jwt.Secret = process.env.JWT_SECRET!;
         const user = jwt.verify(token, secret) as User;
-        const testUser = new User(user.id, user.firstName, user.lastName, user.email, user.password, user.admin).toJSON();
-        const dbUser = (await userDb.getUser((user as User).id)).toJSON();
-        if (JSON.stringify(testUser) !== JSON.stringify(dbUser)) {
-            throw new Unauthorized({ message: "Invalid Token!!!!!!!!!!!!!" });
-        }
         req.user = user;
         next();
     } catch (error) {
@@ -69,11 +64,6 @@ export async function verifyAdminJwt(req: MyRequest, res: Response, next: NextFu
     try {
         const secret: jwt.Secret = process.env.JWT_SECRET!;
         const user = jwt.verify(token, secret) as User;
-        const testUser = new User(user.id, user.firstName, user.lastName, user.email, user.password, user.admin).toJSON();
-        const dbUser = (await userDb.getUser((user as User).id)).toJSON();
-        if (JSON.stringify(testUser) !== JSON.stringify(dbUser)) {
-            throw new Unauthorized({ message: "Invalid Token!!!!!!!!!!!!!" });
-        }
         if ((user as User).admin) {
             req.user = user;
             next();

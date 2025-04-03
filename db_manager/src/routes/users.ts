@@ -23,7 +23,7 @@ usersRoute.get(routeUri + "/:id/subscription", verifyJwt, controller.getUserSubs
 usersRoute.delete(routeUri + "/:id", verifyJwt, controller.deleteUser);
 
 
-usersRoute.patch(routeUri, verifyJwt, controller.editUser);
+usersRoute.patch(routeUri + "/:id", verifyJwt, controller.editUser);
 
 
 usersRoute.post(routeUri, controller.createUser);

@@ -22,6 +22,8 @@ services:
     volumes:
       - scheduleAI_vol:/var/lib/mysql
     env_file: ".env"
+    ports:
+      - 3306:3306
     image: scheduledb:latest
   db_manager:
     container_name: db_manager
@@ -43,6 +45,3 @@ volumes:
   scheduleAI_vol:
     external: true
     name: scheduleAI_vol
-  nginx_vol:
-    external: true
-    name: nginx_vol

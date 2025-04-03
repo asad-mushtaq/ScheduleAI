@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import * as subscriptionController from '../../controllers/subscriptions.js';
 import * as service from '../../database/crud/subscription.js';
-import { verifyId } from '../../services/verify-params.js';
+import { verifyId } from '../../services/verification.js';
 import { errorHandler } from '../../services/errors.js';
 
 jest.mock('../../database/crud/subscription.js');

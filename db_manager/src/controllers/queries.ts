@@ -2,13 +2,14 @@ import { Request, Response } from 'express';
 
 import { errorHandler } from '../services/errors.js';
 import * as service from "../database/crud/query.js"
-import { verifyId } from '../services/verify-params.js';
+import { verifyId, verifyIdentity } from '../services/verification.js';
 
 
 export async function createQuery(req: Request, res: Response): Promise<void> {
 	try {
 		res.setHeader('Content-Type', 'application/json');
 		const userId = verifyId(req.body.userId);
+		res = verifyIdentity(req.cookies.token, userId, res);
 		const query = await service.createQuery(req.body.prompt, req.body.response, userId);
 		console.log(query.response);
 		res.json(query);
@@ -39,7 +40,7 @@ export async function getQueryById(req: Request, res: Response): Promise<void> {
 	}
 }
 
-export async function getAllQuerys(req: Request, res: Response): Promise<void> {
+export async function getAllQueries(req: Request, res: Response): Promise<void> {
 	try {
 		res.setHeader('Content-Type', 'application/json');
 		const querys = await service.getAllQueries();

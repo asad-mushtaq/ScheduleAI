@@ -31,6 +31,6 @@ app.get('/event-details', function(req, res){
     res.sendFile(__dirname + '/public/event-details.html');
 });
 
-app.listen(process.env.PORT, () => {
-    console.log(`Example app on url: http://localhost:${process.env.PORT}`)
+app.listen(process.env.FRONTEND_PORT, () => {
+    console.log(`Example app on url: http://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`)
   })

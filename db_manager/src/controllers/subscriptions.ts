@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import { errorHandler } from '../services/errors.js';
 import * as service from "../database/crud/subscription.js"
-import { verifyId } from '../services/verify-params.js';
+import { verifyId } from '../services/verification.js';
 
 
 export async function createSubscription(req: Request, res: Response): Promise<void> {

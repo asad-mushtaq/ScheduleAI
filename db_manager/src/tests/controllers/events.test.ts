@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import * as eventController from '../../controllers/events.js';
 import * as service from '../../database/crud/event.js';
-import { verifyId } from '../../services/verify-params.js';
+import { verifyId } from '../../services/verification.js';
 import { errorHandler } from '../../services/errors.js';
 
 jest.mock('../../database/crud/event.js');

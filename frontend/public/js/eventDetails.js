@@ -12,11 +12,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function getEvent() {
         let event = null;
 
-        const response = await fetch(`http://localhost:3000/v1/events/${eventId}`, {
+        const response = await fetch(`http://localhost:8080/db_manager/v1/events/${eventId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
-            }
+            },
+            credentials: 'include'
         });
         if (!response.ok) {
             throw new Error("Failed to fetch events");
@@ -25,11 +26,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         const data = await response.json();
         event = data; 
     
-        const taskResponse = await fetch(`http://localhost:3000/v1/events/${eventId}/tasks`, {
+        const taskResponse = await fetch(`http://localhost:8080/db_manager/v1/events/${eventId}/tasks`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
-            }
+            },
+            credentials: 'include'
         });
         if (!taskResponse.ok) {
             throw new Error(`Failed to fetch tasks for ${event.name} event.`);
@@ -58,12 +60,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         const description = taskDescription.value;
         const name = taskName.value;
 
-        await fetch('http://localhost:3000/v1/tasks', {
+        await fetch('http://localhost:8080/db_manager/v1/tasks', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
             },
-            body: JSON.stringify({ name, description, completed, eventId })
+            body: JSON.stringify({ name, description, completed, eventId }),
+            credentials: 'include'
         }).then(async function (response) {
             console.log(response.status);
             const json = await response.json();

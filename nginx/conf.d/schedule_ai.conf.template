@@ -1,0 +1,19 @@
+server {
+    listen       ${NGINX_PORT};
+    listen  [::]:${NGINX_PORT};
+    server_name  ${NGINX_HOST};
+
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    location /db_manager/ {
+        proxy_pass http://${DB_MANAGER_HOST}:${DB_MANAGER_PORT}/;
+        # For requests to /products, forward the request to the product_service upstream.
+        proxy_set_header Host ${DOLLAR}host;
+        proxy_set_header X-Real-IP ${DOLLAR}remote_addr;
+        proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto ${DOLLAR}scheme;
+        # Set various headers to forward to the upstream server.
+    }
+
+}
+

@@ -20,10 +20,14 @@ export class Task {
   public get description(): string {
     return this._description
   }
+
   public set description(value: string) {
     this._description = value;
   }
 
+  public get eventId(): number {
+    return this._eventId
+  }
 
   public get completed(): boolean {
     return this._completed;

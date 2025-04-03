@@ -7,7 +7,7 @@ async function signUp() {
   const firstName = fullName.split(' ').slice(0, -1).join(' ');
   const lastName = fullName.split(' ').slice(-1).join(' ');
 
-  await fetch('http://localhost:3000/v1/users', {
+  await fetch('http://localhost:8080/db_manager/v1/users', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8'
@@ -20,7 +20,7 @@ async function signUp() {
     if (!response.ok) {
       alert(json.errors[0].message);
     } else {
-      localStorage.setItem("id", JSON.stringify(json.id));
+      localStorage.setItem("userId", JSON.stringify(json.id));
       window.location.replace("/home");
     }
   })
@@ -31,11 +31,12 @@ async function login() {
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
 
-  const response = await fetch('http://localhost:3000/v1/users/login', {
+  const response = await fetch('http://localhost:8080/db_manager/v1/users/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8'
     },
+    credentials: 'include',
     body: JSON.stringify({email, password})
   }).then(async function(response) {
     console.log(response.status);
@@ -44,7 +45,7 @@ async function login() {
     if (!response.ok) {
       alert(json.errors[0].message);
     } else {
-      localStorage.setItem("id", JSON.stringify(json.id));
+      localStorage.setItem("userId", JSON.stringify(json.id));
       window.location.replace("/home");
     }
   })
@@ -52,7 +53,9 @@ async function login() {
 
 // Logout
 function logout() {
-  localStorage.removeItem("id");
+  localStorage.removeItem("userId");
   alert("Logged out!");
   window.location.replace("/");
 }
+
+

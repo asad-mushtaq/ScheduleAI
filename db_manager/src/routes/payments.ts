@@ -1,18 +1,19 @@
 import express from 'express';
 
 import * as controller from '../controllers/payments.js';
+import { verifyAdminJwt, verifyJwt } from '../services/verification.js';
 
 export const paymentsRoute = express.Router();
 const routeUri = "/v1/payments";
 
 
-paymentsRoute.get(routeUri + "/:id", controller.getPaymentById);
+paymentsRoute.get(routeUri + "/:id", verifyJwt, controller.getPaymentById);
 
-paymentsRoute.get(routeUri, controller.getAllPayments);
+paymentsRoute.get(routeUri, verifyAdminJwt, controller.getAllPayments);
 
 
-paymentsRoute.delete(routeUri + "/:id", controller.deletePayment);
+paymentsRoute.delete(routeUri + "/:id", verifyJwt, controller.deletePayment);
 
-paymentsRoute.patch(routeUri, controller.editPayment);
+paymentsRoute.patch(routeUri, verifyJwt, controller.editPayment);
 
-paymentsRoute.post(routeUri, controller.createPayment);
+paymentsRoute.post(routeUri, verifyJwt, controller.createPayment);

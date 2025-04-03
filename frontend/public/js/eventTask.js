@@ -15,6 +15,10 @@ document.addEventListener("DOMContentLoaded", function () {
     let events = [];
     let selectedEvent = null;
 
+    function getSession() {
+        return localStorage.getItem("userId");
+    }
+
     if (typeof FullCalendar === "undefined") {
         console.error("FullCalendar failed to load.");
         alert("Error: FullCalendar is missing.");
@@ -38,45 +42,47 @@ document.addEventListener("DOMContentLoaded", function () {
     calendar.render();
 
     async function loadEvents() {
-        const userId = localStorage.getItem("id");
+        const userId = getSession();
         try {
-            const response = await fetch(`http://localhost:3000/v1/users/${userId}/events`, {
+            const response = await fetch(`http://localhost:8080/db_manager/v1/users/${userId}/events`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8'
-                }
+                },
+                credentials: 'include'
             });
             if (!response.ok) {
                 throw new Error("Failed to fetch events");
             }
 
             const data = await response.json();
-            events = data; 
+            events = data;
 
 
             for (const event of events) {
-                const taskResponse = await fetch(`http://localhost:3000/v1/events/${event.id}/tasks`, {
+                const taskResponse = await fetch(`http://localhost:8080/db_manager/v1/events/${event.id}/tasks`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json; charset=utf-8'
-                    }
+                    },
+                    credentials: 'include'
                 });
                 if (!taskResponse.ok) {
                     throw new Error(`Failed to fetch tasks for ${event.name} event.`);
                 }
-    
+
                 const tasks = await taskResponse.json();
                 console.log(tasks);
                 event.tasks = tasks;
                 calendar.addEvent({
                     id: event.id.toString(),
                     title: event.name,
-                    start: event.startDate, 
+                    start: event.startDate,
                     extendedProps: { tasks: tasks }
                 });
             };
         } catch (error) {
-            console.error("Error loading events:", error);
+            console.error("Error loading events:", error.message);
             alert("Failed to load events from the server.");
         }
     }
@@ -95,13 +101,14 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        const userId = localStorage.getItem("id");
+        const userId = getSession();
 
-        await fetch('http://localhost:3000/v1/events', {
+        await fetch('http://localhost:8080/db_manager/v1/events', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
             },
+            credentials: 'include',
             body: JSON.stringify({ userId, name, description, startDate, length })
         }).then(async function (response) {
             console.log(response.status);
@@ -136,11 +143,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const description = taskDescription.value;
         const name = taskName.value;
 
-        await fetch('http://localhost:3000/v1/tasks', {
+        await fetch('http://localhost:8080/db_manager/v1/tasks', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
             },
+            credentials: 'include',
             body: JSON.stringify({ name, description, completed, eventId })
         }).then(async function (response) {
             console.log(response.status);
@@ -155,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (calendarEvent) {
                     calendarEvent.setExtendedProp("tasks", selectedEvent.tasks);
                 }
-        
+
                 renderTasksForEvent(selectedEvent);
                 taskName.value = "";
             }

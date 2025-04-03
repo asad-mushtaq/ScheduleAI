@@ -1,47 +1,48 @@
 services:
-  api_gateway:
+  schedule_ai_api_gateway:
+    container_name: schedule_ai_gateway
     image: nginx
     volumes:
       - ./nginx:/etc/nginx/
     ports:
-      - "8080:80"
-    environment:
-      - NGINX_HOST=foobar.com
-      - NGINX_PORT=80
-    networks:
-      - scheduleAI_net
+      - "8080:8080"
+    env_file: ".env"
     depends_on:
-      scheduledb:
+      schedule_ai_db:
         condition: service_healthy
-      db_manager:
+      schedule_ai_db_manager:
         condition: service_started
-  scheduledb:
-    container_name: scheduledb
-    networks:
-      - scheduleAI_net
+    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/schedule_ai.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+  schedule_ai_db:
+    container_name: schedule_ai_db
     volumes:
-      - scheduleAI_vol:/var/lib/mysql
+      - schedule_ai_db_vol:/var/lib/mysql
     env_file: ".env"
     ports:
       - 3306:3306
-    image: scheduledb:latest
-  db_manager:
-    container_name: db_manager
-    networks:
-      - scheduleAI_net
+    image: schedule_ai_db:latest
+    build: ./db
+  schedule_ai_db_manager:
+    container_name: schedule_ai_db_manager
     env_file: ".env"
     depends_on:
-      scheduledb:
+      schedule_ai_db:
         condition: service_healthy
     ports:
       - 3000:3000
-    image: db_manager:latest
-
-networks:
-  scheduleAI_net:
-    external: true
-    name: scheduleAI_net
+    image: schedule_ai_db_manager:latest
+    build: ./db_manager
+  schedule_ai_frontend:
+    container_name: schedule_ai_frontend
+    env_file: ".env"
+    depends_on:
+      schedule_ai_db_manager:
+        condition: service_started
+    ports:
+      - 4000:4000
+    image: schedule_ai_frontend:latest
+    build: ./frontend
+  
 volumes:
-  scheduleAI_vol:
-    external: true
-    name: scheduleAI_vol
+  schedule_ai_db_vol:
+    name: schedule_ai_db_vol

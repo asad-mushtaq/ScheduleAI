@@ -18,8 +18,6 @@ services:
     volumes:
       - schedule_ai_db_vol:/var/lib/mysql
     env_file: ".env"
-    ports:
-      - 3306:3306
     image: schedule_ai_db:latest
     build: ./db
   schedule_ai_db_manager:
@@ -28,15 +26,13 @@ services:
     depends_on:
       schedule_ai_db:
         condition: service_healthy
-    ports:
-      - 3000:3000
     image: schedule_ai_db_manager:latest
     build: ./db_manager
   schedule_ai_frontend:
     container_name: schedule_ai_frontend
     env_file: ".env"
     depends_on:
-      schedule_ai_db_manager:
+      schedule_ai_api_gateway:
         condition: service_started
     ports:
       - 4000:4000

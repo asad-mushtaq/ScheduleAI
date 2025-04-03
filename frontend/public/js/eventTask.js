@@ -72,7 +72,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 const tasks = await taskResponse.json();
-                console.log(tasks);
                 event.tasks = tasks;
                 calendar.addEvent({
                     id: event.id.toString(),

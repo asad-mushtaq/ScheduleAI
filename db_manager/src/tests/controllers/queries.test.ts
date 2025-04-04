@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as queryController from '../../controllers/queries.js';
 import * as service from '../../database/crud/query.js';
-import { verifyId, verifyIdentity } from '../../services/verification.js';
+import { verifyId, verifyAccess } from '../../services/verification.js';
 import { errorHandler } from '../../services/errors.js';
 
 jest.mock('../../database/crud/query.js');
@@ -29,13 +29,13 @@ describe('Query Controller', () => {
       const fakeQuery = { id: '1', userId: '123', prompt: 'prompt', response: 'response' };
 
       (verifyId as jest.Mock).mockReturnValue('123');
-      (verifyIdentity as jest.Mock).mockReturnValue(res);
+      (verifyAccess as jest.Mock).mockReturnValue(res);
       (service.createQuery as jest.Mock).mockResolvedValue(fakeQuery);
 
       await queryController.createQuery(req as Request, res as Response);
 
       expect(verifyId).toHaveBeenCalledWith('123');
-      expect(verifyIdentity).toHaveBeenCalledWith('test-token', '123', res);
+      expect(verifyAccess).toHaveBeenCalledWith('test-token', '123', res);
       expect(service.createQuery).toHaveBeenCalledWith('prompt', 'response', '123');
       expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/json');
       expect(res.json).toHaveBeenCalledWith(fakeQuery);
@@ -47,7 +47,7 @@ describe('Query Controller', () => {
       req.cookies = { token: 'test-token' };
 
       (verifyId as jest.Mock).mockReturnValue('123');
-      (verifyIdentity as jest.Mock).mockReturnValue(res);
+      (verifyAccess as jest.Mock).mockReturnValue(res);
       (service.createQuery as jest.Mock).mockRejectedValue(error);
 
       await queryController.createQuery(req as Request, res as Response);

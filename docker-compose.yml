@@ -12,6 +12,8 @@ services:
         condition: service_healthy
       schedule_ai_db_manager:
         condition: service_started
+      schedule_ai_openai:
+        condition: service_started
     command: /bin/bash -c "envsubst < /etc/nginx/conf.d/schedule_ai.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
   schedule_ai_db:
     container_name: schedule_ai_db

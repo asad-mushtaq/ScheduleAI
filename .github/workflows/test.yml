@@ -1,0 +1,35 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - test  
+  pull_request:
+    branches:
+      - main 
+
+jobs:
+  test:
+    runs-on: ubuntu-latest 
+
+    steps:
+    # 1. Check out the code from the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # 2. Set up Node.js 
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18' 
+
+    # 3. Install dependencies
+    - name: Install dependencies
+      run: |
+        cd db_manager
+        npm install
+
+    # 4. Run tests using npm (this assumes the "test" script is configured in your package.json)
+    - name: Run tests
+      run: |
+        npm test

@@ -26,6 +26,7 @@ jobs:
     # 3. Install dependencies
     - name: Install dependencies
       run: |
+        cd db_manager
         npm install
 
     # 4. Run tests using npm (this assumes the "test" script is configured in your package.json)

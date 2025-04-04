@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - test  
-  pull_request:
-    branches:
-      - main 
 
 jobs:
   test:
@@ -32,4 +29,5 @@ jobs:
     # 4. Run tests using npm (this assumes the "test" script is configured in your package.json)
     - name: Run tests
       run: |
+        cd db_manager
         npm test

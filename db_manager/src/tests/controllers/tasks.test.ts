@@ -5,7 +5,7 @@ import { verifyId } from '../../services/verification.js';
 import { errorHandler } from '../../services/errors.js';
 
 jest.mock('../../database/crud/task.js');
-jest.mock('../../services/verify-params.js');
+jest.mock('../../services/verification.js');
 jest.mock('../../services/errors.js');
 
 describe('Task Controller', () => {

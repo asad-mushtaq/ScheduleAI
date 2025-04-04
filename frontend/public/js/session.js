@@ -21,7 +21,7 @@ async function signUp() {
       alert(json.errors[0].message);
     } else {
       localStorage.setItem("userId", JSON.stringify(json.id));
-      window.location.replace("/home");
+      window.location.replace("/login");
     }
   })
 }

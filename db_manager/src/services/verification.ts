@@ -49,7 +49,7 @@ export async function verifyJwt(req: MyRequest, res: Response, next: NextFunctio
 }
 
 
-export function verifyIdentity(token: any, userId: number, res: Response) {
+export function verifyAccess(token: any, userId: number, res: Response) {
     const secret: jwt.Secret = process.env.JWT_SECRET!;
     const user: User = jwt.verify(token, secret) as User;
     if (user.id != userId && !user.admin) {

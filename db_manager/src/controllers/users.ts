@@ -6,7 +6,7 @@ import { sign } from 'jsonwebtoken';
 import { User } from "../models/user.js"
 import { errorHandler } from '../services/errors.js';
 import * as service from "../database/crud/user.js"
-import { verifyId, verifyIdentity } from '../services/verification.js';
+import { verifyId, verifyAccess } from '../services/verification.js';
 
 
 export async function getAllUsers(req: Request, res: Response): Promise<void> {
@@ -69,7 +69,7 @@ export async function deleteUser(req: Request, res: Response): Promise<void> {
 	try {
 		res.setHeader('Content-Type', 'application/json');
 		const id = verifyId(req.params.id);
-		res = verifyIdentity(req.cookies.token, id, res);
+		res = verifyAccess(req.cookies.token, id, res);
 		const user = await service.deleteUser(id);
 		res.json(user.toJSON());
 	} catch (error) {
@@ -81,7 +81,7 @@ export async function getUserById(req: Request, res: Response): Promise<void> {
 	try {
 		res.setHeader('Content-Type', 'application/json');
 		const id = verifyId(req.params.id);
-		res = verifyIdentity(req.cookies.token, id, res);
+		res = verifyAccess(req.cookies.token, id, res);
 		const user = await service.getUser(id);
 		res.json(user.toJSON());
 	} catch (error) {
@@ -93,7 +93,7 @@ export async function getUserEvents(req: Request, res: Response): Promise<void> 
 	try {
 		res.setHeader('Content-Type', 'application/json');
 		const id = verifyId(req.params.id);
-		res = verifyIdentity(req.cookies.token, id, res);
+		res = verifyAccess(req.cookies.token, id, res);
 		const events = await service.getUserEvents(id);
 		let jsonEvents = Array();
 		events.forEach(event => {
@@ -109,7 +109,7 @@ export async function getUserPayments(req: Request, res: Response): Promise<void
 	try {
 		res.setHeader('Content-Type', 'application/json');
 		const id = verifyId(req.params.id);
-		res = verifyIdentity(req.cookies.token, id, res);
+		res = verifyAccess(req.cookies.token, id, res);
 		const payments = await service.getUserPayments(id);
 		let jsonPayments = Array();
 		payments.forEach(payment => {
@@ -125,7 +125,7 @@ export async function getUserQueries(req: Request, res: Response): Promise<void>
 	try {
 		res.setHeader('Content-Type', 'application/json');
 		const id = verifyId(req.params.id);
-		res = verifyIdentity(req.cookies.token, id, res);
+		res = verifyAccess(req.cookies.token, id, res);
 		const queries = await service.getUserQueries(id);
 		let jsonQueries = Array();
 		queries.forEach(query => {
@@ -141,7 +141,7 @@ export async function getUserSubscription(req: Request, res: Response): Promise<
 	try {
 		res.setHeader('Content-Type', 'application/json');
 		const id = verifyId(req.params.id);
-		res = verifyIdentity(req.cookies.token, id, res);
+		res = verifyAccess(req.cookies.token, id, res);
 		const payment = await service.getUserSubscription(id);
 		res.json(payment.toJSON());
 	} catch (error) {
@@ -153,7 +153,7 @@ export async function editUser(req: Request, res: Response): Promise<void> {
 	try {
 		res.setHeader('Content-Type', 'application/json');
 		const id = verifyId(req.params.id);
-		res = verifyIdentity(req.cookies.token, id, res);
+		res = verifyAccess(req.cookies.token, id, res);
 		let user = null;
 		if(req.body.password !== undefined) {
 			const salt = genSaltSync(10);

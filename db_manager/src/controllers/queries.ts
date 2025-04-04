@@ -2,14 +2,14 @@ import { Request, Response } from 'express';
 
 import { errorHandler } from '../services/errors.js';
 import * as service from "../database/crud/query.js"
-import { verifyId, verifyIdentity } from '../services/verification.js';
+import { verifyId, verifyAccess } from '../services/verification.js';
 
 
 export async function createQuery(req: Request, res: Response): Promise<void> {
 	try {
 		res.setHeader('Content-Type', 'application/json');
 		const userId = verifyId(req.body.userId);
-		res = verifyIdentity(req.cookies.token, userId, res);
+		res = verifyAccess(req.cookies.token, userId, res);
 		const query = await service.createQuery(req.body.prompt, req.body.response, userId);
 		console.log(query.response);
 		res.json(query);

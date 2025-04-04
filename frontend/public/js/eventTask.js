@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 calendar.addEvent({
                     id: event.id.toString(),
                     title: event.name,
-                    start: event.startDate,
+                    start: new Date(event.startDate),
                     extendedProps: { tasks: tasks }
                 });
             };
@@ -85,7 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Failed to load events from the server.");
         }
     }
-
 
     loadEvents();
 
@@ -111,15 +110,16 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify({ userId, name, description, startDate, length })
         }).then(async function (response) {
             console.log(response.status);
-            const json = await response.json();
-            console.log(json);
+            const event = await response.json();
             if (!response.ok) {
-                alert(json.errors[0].message);
+                alert(event.errors[0].message);
             } else {
+                event.tasks = [];
+                events.push(event);
                 calendar.addEvent({
-                    id: json.id.toString(),
-                    title: json.name,
-                    start: json.startDate,
+                    id: event.id.toString(),
+                    title: event.name,
+                    start: event.startDate,
                     extendedProps: { tasks: [] }
                 });
             }
@@ -169,6 +169,96 @@ document.addEventListener("DOMContentLoaded", function () {
         })
     }
 
+    async function deleteTask(click) {
+        const clickedElem = click.target;
+        const arr = clickedElem.id.split("-");
+        const taskId = arr[0];
+        await fetch(`http://localhost:8080/db_manager/v1/tasks/${taskId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            },
+            credentials: 'include',
+        }).then(async function (response) {
+            if (!response.ok) {
+                alert("task deletion failed!");
+            } else {
+                const taskElem = clickedElem.parentElement;
+                const taskList = taskElem.parentElement;
+                taskElem.remove();
+                let newTasks = [];
+                for ( task of selectedEvent.tasks ) {
+                    if (task.id != taskId) {
+                        newTasks.push(task);
+                    }
+                }
+                selectedEvent.tasks = newTasks;
+                let newEvents = []
+                for ( userEvent of events ) {
+                    if (userEvent.id === selectedEvent.id) {
+                        newEvents.push(selectedEvent);
+                    } else {
+                        newEvents.push(userEvent);
+                    }
+                    events= newEvents;
+                }
+                if (taskList.innerHTML === "") {
+                    taskList.innerHTML = "<li>No tasks for this event</li>";
+                } 
+            }
+        });
+    }
+
+    async function checkMarkTask(click) {
+        const clickedElem = click.target;
+        const arr = clickedElem.id.split("-");
+        const taskId = arr[0];
+        let selectedTask = undefined;
+        for ( task of selectedEvent.tasks ) {
+            if (task.id == taskId) {
+                selectedTask = task;
+            }
+        }
+        if (selectedTask === undefined) {
+            alert("selected task not found.");
+            return;
+        }
+        const id = selectedTask.id;
+        const name = selectedTask.name;
+        const description = selectedTask.description;
+        selectedTask.completed = clickedElem.checked;
+        const completed = selectedTask.completed;
+        await fetch('http://localhost:8080/db_manager/v1/tasks', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ id, name, description, completed })
+        }).then(async function (response) {
+            console.log(response.status);
+            const newEvent = await response.json();
+            console.log(newEvent);
+            if (!response.ok) {
+                alert(newEvent.errors[0].message);
+            } else {
+                let newTasks = [];
+                for ( task of selectedEvent.tasks ) {
+                    if (task.id === taskId) {
+                        newTasks.push(selectedTask);
+                    }
+                    newTasks.push(task);
+                }
+                selectedEvent.tasks = newTasks;
+                for ( userEvent of events ) {
+                    if (userEvent.id !== selectedEvent.id) {
+                        userEvent = selectedEvent;
+                    }
+                }
+            }
+        })
+    }
+
     function renderTasksForEvent(event) {
         taskList.innerHTML = "";
         if (event.tasks.length === 0) {
@@ -176,9 +266,15 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             event.tasks.forEach(task => {
                 const li = document.createElement("li");
-                li.innerHTML = `<input type="checkbox" id="${task.id}-checkbox" name="${task.id}-checkbox" class="task-checkbox" value="Bike">
-                <label for="${task.id}-checkbox"> ${task.name}, ${task.description || ""}</label><br>`;
+                li.id = `${task.id}-task`
+                li.innerHTML = `<input type="checkbox" id="${task.id}-task-checkbox" name="${task.id}-task-checkbox" class="task-checkbox">
+                <label for="${task.id}-task-checkbox"> ${task.name}, ${task.description || ""} </label><button id="${task.id}-task-delete-btn" class="task-delete-btn">Delete</button>`;
                 taskList.appendChild(li);
+                const deleteBtn = document.getElementById(`${task.id}-task-delete-btn`);
+                const checkbox = document.getElementById(`${task.id}-task-checkbox`);
+                checkbox.checked = task.completed;
+                deleteBtn.addEventListener("click", deleteTask);
+                checkbox.addEventListener("click", checkMarkTask);
             });
         }
     }

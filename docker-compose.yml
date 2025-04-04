@@ -28,16 +28,16 @@ services:
         condition: service_healthy
     image: schedule_ai_db_manager:latest
     build: ./db_manager
-  schedule_ai_frontend:
-    container_name: schedule_ai_frontend
-    env_file: ".env"
-    depends_on:
-      schedule_ai_api_gateway:
-        condition: service_started
-    ports:
-      - 4000:4000
-    image: schedule_ai_frontend:latest
-    build: ./frontend
+  # schedule_ai_frontend:
+  #   container_name: schedule_ai_frontend
+  #   env_file: ".env"
+  #   depends_on:
+  #     schedule_ai_api_gateway:
+  #       condition: service_started
+  #   ports:
+  #     - 4000:4000
+  #   image: schedule_ai_frontend:latest
+  #   build: ./frontend
   
 volumes:
   schedule_ai_db_vol:

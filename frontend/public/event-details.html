@@ -17,11 +17,18 @@
     <div class="container">
         <h1>Details for <span id="event-name"></span></h1>
         <p id="event-description"></p>
+        <p id="event-start-date"></p>
+        <p id="event-length"></p>
+        <input id="event-name-input"></input>
+        <input id="event-description-input"></input>
+        <input type="datetime-local" id="event-start-date-input"></input>
+        <input type="number" id="event-length-input"></input>
+        <button id="edit-event-btn">Update Event</button>
+        <button id="delete-event-btn">Delete Event</button>
         <h2>Tasks:</h2>
         <input type="text" id="task-name" placeholder="Enter a task name">
         <input type="text" id="task-description" placeholder="Enter a task description">
         <button id="add-task">Add Task</button>
-        <button id="view-event-details">View Event Details</button>
         <ul id="task-list"></ul>
     </div>
 

@@ -69,6 +69,7 @@ export async function deleteEvent(id: number): Promise<Event> {
   const [rows] = await pool.execute<RowDataPacket[]>('SELECT * FROM event WHERE id = ?', [id]);
   if (rows.length > 0) {
     const dbEvent = rows[0];
+    await pool.execute('DELETE FROM task WHERE event_id IN (SELECT id FROM event);');
     await pool.execute('DELETE FROM event WHERE id = ?', [id]);
     const event: Event = new Event(dbEvent.id, dbEvent.user_id, dbEvent.name, dbEvent.description, dbEvent.start_date, dbEvent.length, dbEvent.completed);
     return event;

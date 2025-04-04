@@ -19,6 +19,20 @@
 
     <div class="container">
         <h1>ScheduleAI</h1>
+        
+        <!-- AI Feedback Form -->
+        <div id="feedback-container">
+            <h2>AI Feedback</h2>
+            <input type="text" id="user-prompt" placeholder="Prompt" style="width: 400px;">
+            <button id="get-feedback">Get Feedback</button>
+            <!-- AI Response Section -->
+            </br>
+            <p id="ai-response-loading" style="display: none;">
+                AI Feedback is Loading.....
+            </p>
+            <span id="ai-response" style="display: none; border-top: 2px solid black; border-bottom: 2px solid black; padding: 5px; margin-top: 10px; margin-bottom: 0px; border-radius: 5px; background-color: #fafafa;">
+            </span>
+        </div>
 
         <!-- Event Creation Form -->
         <div id="event-container">
@@ -29,6 +43,7 @@
             <input type="number" id="event-length" placeholder="Event Length (Hours)">
             <button id="create-event">Create Event</button>
         </div>
+
 
         <!-- Calendar -->
         <div id="calendar-container">

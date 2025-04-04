@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const taskDescription = document.getElementById("task-description");
     const addTaskBtn = document.getElementById("add-task");
     const viewEventDetailsBtn = document.getElementById("view-event-details");
+    const getFeedbackBtn = document.getElementById("get-feedback");
+    const aiResponse = document.getElementById("ai-response");
+    const userPrompt = document.getElementById("user-prompt");
 
     let events = [];
     let selectedEvent = null;
@@ -288,7 +291,49 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = `event-details.html?eventId=${selectedEvent.id}`;
     }
 
+    async function getFeedback() {
+        const prompt = userPrompt.value;
+        const loading = document.getElementById("ai-response-loading");
+        aiResponse.innerHTML = ""
+        aiResponse.style.display = 'none';
+        
+        if (!prompt) {
+            alert("Please enter a prompt to get feedback.");
+            return;
+        }
+        
+        loading.style.display = 'block';  // To show the element
+
+        const userId = getSession();
+        // Creating the request body correctly
+        const query = {
+            prompt: prompt,  // the user input
+            events: events    // the list of events
+        };
+        console.log(query)
+    
+        await fetch('http://localhost:8080/query', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            },
+            body: JSON.stringify(query)
+        }).then(async function (response) {
+            console.log(response.status);
+            const json = await response.json();
+            console.log(json);
+            if (!response.ok) {
+                alert(json.error);
+            } else {
+                loading.style.display = 'none';   // To hide the element
+                aiResponse.innerHTML = json.response.slice(7, -3)
+                aiResponse.style.display = 'inline-block';
+            }
+        })
+    }
+
     createEventBtn.addEventListener("click", createEvent);
     addTaskBtn.addEventListener("click", addTaskToEvent);
     viewEventDetailsBtn.addEventListener("click", openTaskDetailsPage);
+    getFeedbackBtn.addEventListener("click", getFeedback);
 });

@@ -6,13 +6,61 @@
     <title>Login</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
+<style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.container {
+    background: #fff;
+    width: 300px;
+    margin-top: 10rem;
+    padding: 2rem;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+button {
+    width: 100%;
+    padding: 0.75rem;
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+button:hover {
+    background: #555;
+}
+</style>
 <body>
     <nav>
         <a href="/">Welcome screen</a>
         <a href="signup">Sign Up</a>
         <a href="login">Login</a>
     </nav>
-    <div class="container">
+    <div id="login-form" class="container">
         <h2>Login</h2>
         <input type="email" id="login-email" placeholder="email">
         <input type="password" id="login-password" placeholder="Password">

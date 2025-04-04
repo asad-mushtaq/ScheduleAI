@@ -1,6 +1,6 @@
 const userId = localStorage.getItem("userId");
 
-if (userId === null) {
+if (userId === null || userId === undefined) {
     window.location.replace("/");
 }
 

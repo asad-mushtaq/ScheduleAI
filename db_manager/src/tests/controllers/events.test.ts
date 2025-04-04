@@ -1,4 +1,3 @@
-// event.controller.test.ts
 import { Request, Response } from 'express';
 import * as eventController from '../../controllers/events.js';
 import * as service from '../../database/crud/event.js';

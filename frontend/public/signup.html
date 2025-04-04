@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<style>
+    .container {
+    background: #fff;
+    width: 300px;
+    margin-top: 10rem;
+    padding: 2rem;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+</style>
+
+<body>
+    <nav>
+        <a href="/">Welcome screen</a>
+        <a href="signup">Sign Up</a>
+        <a href="login">Login</a>
+    </nav>
+    
+    <div id="signup-form" class="container">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-fullname" placeholder="Full Name">
+        <input type="email" id="signup-email" placeholder="Email">
+        <input type="password" id="signup-password" placeholder="Password">
+        <button onclick="signUp()">Sign Up</button>
+    </div>
+
+    <script src="js/session.js"></script>
+    <script src="js/unprotected.js"></script>
+</body>
+</html>

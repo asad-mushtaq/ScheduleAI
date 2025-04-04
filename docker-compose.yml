@@ -1,0 +1,51 @@
+services:
+  schedule_ai_api_gateway:
+    container_name: schedule_ai_gateway
+    image: nginx
+    volumes:
+      - ./nginx:/etc/nginx/
+    ports:
+      - "8080:8080"
+    env_file: ".env"
+    depends_on:
+      schedule_ai_db:
+        condition: service_healthy
+      schedule_ai_db_manager:
+        condition: service_started
+      schedule_ai_openai:
+        condition: service_started
+    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/schedule_ai.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+  schedule_ai_db:
+    container_name: schedule_ai_db
+    volumes:
+      - schedule_ai_db_vol:/var/lib/mysql
+    env_file: ".env"
+    image: schedule_ai_db:latest
+    build: ./db
+  schedule_ai_db_manager:
+    container_name: schedule_ai_db_manager
+    env_file: ".env"
+    depends_on:
+      schedule_ai_db:
+        condition: service_healthy
+    image: schedule_ai_db_manager:latest
+    build: ./db_manager
+  schedule_ai_frontend:
+    container_name: schedule_ai_frontend
+    env_file: ".env"
+    depends_on:
+      schedule_ai_api_gateway:
+        condition: service_started
+    ports:
+      - 4000:4000
+    image: schedule_ai_frontend:latest
+    build: ./frontend
+  schedule_ai_openai:
+    container_name: schedule_ai_openai
+    env_file: ".env"
+    image: schedule_ai_openai:latest
+    build: ./openai
+  
+volumes:
+  schedule_ai_db_vol:
+    name: schedule_ai_db_vol

@@ -38,6 +38,11 @@ services:
       - 4000:4000
     image: schedule_ai_frontend:latest
     build: ./frontend
+  schedule_ai_openai:
+    container_name: schedule_ai_openai
+    env_file: ".env"
+    image: schedule_ai_openai:latest
+    build: ./openai
   
 volumes:
   schedule_ai_db_vol:

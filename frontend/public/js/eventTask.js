@@ -199,13 +199,15 @@ document.addEventListener("DOMContentLoaded", function () {
         const prompt = userPrompt.value;
         const loading = document.getElementById("ai-response-loading");
         aiResponse.innerHTML = ""
-        loading.style.display = 'block';  // To show the element
-    
+        aiResponse.style.display = 'none';
+        
         if (!prompt) {
             alert("Please enter a prompt to get feedback.");
             return;
         }
-    
+        
+        loading.style.display = 'block';  // To show the element
+
         const userId = getSession();
         // Creating the request body correctly
         const query = {
@@ -229,6 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 loading.style.display = 'none';   // To hide the element
                 aiResponse.innerHTML = json.response.slice(7, -3)
+                aiResponse.style.display = 'inline-block';
             }
         })
     }

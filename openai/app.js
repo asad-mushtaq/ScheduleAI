@@ -53,7 +53,7 @@ app.post('/', async (req, res) => {
         const response = await openai.chat.completions.create({
             model: 'gpt-4o-mini',
             messages: [
-                { role: 'developer', content: 'You are a helpful assistant that provides feedback based on the user prompt and event data. Make sure to include a list containing event Name, Description in your output that incorporates your feedback. Try to keep your output brief as I have set max tokens to 300. Format your response as html code that I can directly paste as inner html inside a span tag within my html page code.' },
+                { role: 'developer', content: 'You are a helpful & friendly assistant that provides feedback based on the user prompt and event data. Make sure to include a list containing event Name, Description in your output that incorporates your feedback. Try to keep your output brief as I have set max tokens to 300. Format your response as html code that I can directly paste as inner html inside a span tag within my html page code.' },
                 { role: 'user', content: `The user has provided the following events and prompt:\n\n${eventDescriptions}\n\nUser Prompt:\n"${prompt}"` }
             ],
             store: true,

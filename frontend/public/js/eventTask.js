@@ -22,6 +22,10 @@ document.addEventListener("DOMContentLoaded", function () {
         return localStorage.getItem("userId");
     }
 
+    function removeSession() {
+        localStorage.removeItem("userId");
+    }
+
     if (typeof FullCalendar === "undefined") {
         console.error("FullCalendar failed to load.");
         alert("Error: FullCalendar is missing.");
@@ -85,7 +89,8 @@ document.addEventListener("DOMContentLoaded", function () {
             };
         } catch (error) {
             console.error("Error loading events:", error.message);
-            alert("Failed to load events from the server.");
+            removeSession();
+            window.location.replace("/home");
         }
     }
 

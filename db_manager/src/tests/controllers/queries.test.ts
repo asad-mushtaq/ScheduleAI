@@ -13,23 +13,22 @@ describe('Query Controller', () => {
   let res: Partial<Response>;
 
   beforeEach(() => {
-    req = {};
+    req = { cookies: { token: 'test-token' } };
     res = {
       json: jest.fn(),
       setHeader: jest.fn(),
     };
     jest.clearAllMocks();
+    // For endpoints that use verifyAccess (createQuery), default it to return the response.
+    (verifyAccess as jest.Mock).mockReturnValue(res);
   });
 
   describe('createQuery', () => {
     it('should call service.createQuery and return query json on success', async () => {
       req.body = { userId: '123', prompt: 'prompt', response: 'response' };
-      req.cookies = { token: 'test-token' };
-
       const fakeQuery = { id: '1', userId: '123', prompt: 'prompt', response: 'response' };
 
       (verifyId as jest.Mock).mockReturnValue('123');
-      (verifyAccess as jest.Mock).mockReturnValue(res);
       (service.createQuery as jest.Mock).mockResolvedValue(fakeQuery);
 
       await queryController.createQuery(req as Request, res as Response);
@@ -44,7 +43,6 @@ describe('Query Controller', () => {
     it('should call errorHandler on error', async () => {
       const error = new Error('Failed');
       req.body = { userId: '123', prompt: 'prompt', response: 'response' };
-      req.cookies = { token: 'test-token' };
 
       (verifyId as jest.Mock).mockReturnValue('123');
       (verifyAccess as jest.Mock).mockReturnValue(res);

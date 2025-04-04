@@ -150,6 +150,5 @@ describe('Subscription Controller', () => {
       await subscriptionController.editSubscription(req as Request, res as Response);
       expect(errorHandler).toHaveBeenCalledWith(error, res);
     });
-    
   });
 });

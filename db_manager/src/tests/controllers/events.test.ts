@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as eventController from '../../controllers/events.js';
 import * as service from '../../database/crud/event.js';
-import { verifyId } from '../../services/verification.js';
+import { verifyId, verifyAccess } from '../../services/verification.js';
 import { errorHandler } from '../../services/errors.js';
 
 jest.mock('../../database/crud/event.js');
@@ -13,12 +13,16 @@ describe('Event Controller', () => {
   let res: Partial<Response>;
 
   beforeEach(() => {
-    req = {};
+    req = {
+      cookies: { token: 'testToken' },
+    };
     res = {
       json: jest.fn(),
       setHeader: jest.fn(),
     };
     jest.clearAllMocks();
+    // By default, let verifyAccess return the response object unchanged.
+    (verifyAccess as jest.Mock).mockReturnValue(res);
   });
 
   describe('createEvent', () => {
@@ -39,6 +43,7 @@ describe('Event Controller', () => {
 
       expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/json');
       expect(verifyId).toHaveBeenCalledWith(req.body.userId);
+      expect(verifyAccess).toHaveBeenCalledWith(req.cookies.token, '123', res);
       expect(service.createEvent).toHaveBeenCalledWith(
         '123',
         'Test Event',
@@ -70,18 +75,22 @@ describe('Event Controller', () => {
 
   describe('deleteEvent', () => {
     it('should call service.deleteEvent and return event json on success', async () => {
-      const fakeEvent = { id: '123' };
+      const fakeEventForAccess = { id: '123', userId: '123' };
+      const fakeDeletedEvent = { id: '123' };
       req.params = { id: '123' };
 
       (verifyId as jest.Mock).mockReturnValue('123');
-      (service.deleteEvent as jest.Mock).mockResolvedValue(fakeEvent);
+      (service.getEvent as jest.Mock).mockResolvedValue(fakeEventForAccess);
+      (service.deleteEvent as jest.Mock).mockResolvedValue(fakeDeletedEvent);
 
       await eventController.deleteEvent(req as Request, res as Response);
 
       expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/json');
       expect(verifyId).toHaveBeenCalledWith(req.params.id);
+      expect(service.getEvent).toHaveBeenCalledWith('123');
+      expect(verifyAccess).toHaveBeenCalledWith(req.cookies.token, fakeEventForAccess.userId, res);
       expect(service.deleteEvent).toHaveBeenCalledWith('123');
-      expect(res.json).toHaveBeenCalledWith(fakeEvent);
+      expect(res.json).toHaveBeenCalledWith(fakeDeletedEvent);
     });
 
     it('should call errorHandler on error', async () => {
@@ -89,7 +98,7 @@ describe('Event Controller', () => {
       req.params = { id: '123' };
 
       (verifyId as jest.Mock).mockReturnValue('123');
-      (service.deleteEvent as jest.Mock).mockRejectedValue(error);
+      (service.getEvent as jest.Mock).mockRejectedValue(error);
 
       await eventController.deleteEvent(req as Request, res as Response);
 
@@ -99,7 +108,7 @@ describe('Event Controller', () => {
 
   describe('getEventById', () => {
     it('should call service.getEvent and return event json on success', async () => {
-      const fakeEvent = { id: '123' };
+      const fakeEvent = { id: '123', userId: '123' };
       req.params = { id: '123' };
 
       (verifyId as jest.Mock).mockReturnValue('123');
@@ -110,6 +119,7 @@ describe('Event Controller', () => {
       expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/json');
       expect(verifyId).toHaveBeenCalledWith(req.params.id);
       expect(service.getEvent).toHaveBeenCalledWith('123');
+      expect(verifyAccess).toHaveBeenCalledWith(req.cookies.token, fakeEvent.userId, res);
       expect(res.json).toHaveBeenCalledWith(fakeEvent);
     });
 
@@ -150,18 +160,22 @@ describe('Event Controller', () => {
 
   describe('getEventTasks', () => {
     it('should call service.getEventTasks and return tasks json on success', async () => {
+      const fakeEventForAccess = { id: '123', userId: '123' };
       const fakeTask1 = { toJSON: jest.fn().mockReturnValue({ id: '1', name: 'Task 1' }) };
       const fakeTask2 = { toJSON: jest.fn().mockReturnValue({ id: '2', name: 'Task 2' }) };
       const fakeTasks = [fakeTask1, fakeTask2];
       req.params = { id: '123' };
 
       (verifyId as jest.Mock).mockReturnValue('123');
+      (service.getEvent as jest.Mock).mockResolvedValue(fakeEventForAccess);
       (service.getEventTasks as jest.Mock).mockResolvedValue(fakeTasks);
 
       await eventController.getEventTasks(req as Request, res as Response);
 
       expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/json');
       expect(verifyId).toHaveBeenCalledWith(req.params.id);
+      expect(service.getEvent).toHaveBeenCalledWith('123');
+      expect(verifyAccess).toHaveBeenCalledWith(req.cookies.token, fakeEventForAccess.userId, res);
       expect(service.getEventTasks).toHaveBeenCalledWith('123');
       expect(fakeTask1.toJSON).toHaveBeenCalled();
       expect(fakeTask2.toJSON).toHaveBeenCalled();
@@ -176,7 +190,7 @@ describe('Event Controller', () => {
       req.params = { id: '123' };
 
       (verifyId as jest.Mock).mockReturnValue('123');
-      (service.getEventTasks as jest.Mock).mockRejectedValue(error);
+      (service.getEvent as jest.Mock).mockRejectedValue(error);
 
       await eventController.getEventTasks(req as Request, res as Response);
 
@@ -186,7 +200,8 @@ describe('Event Controller', () => {
 
   describe('editEvent', () => {
     it('should call service.updateEvent and return event json on success', async () => {
-      const fakeEvent = { id: '123', name: 'Updated Event' };
+      const fakeEventForAccess = { id: '123', userId: '123' };
+      const fakeUpdatedEvent = { id: '123', name: 'Updated Event' };
       req.body = {
         id: '123',
         name: 'Updated Event',
@@ -195,11 +210,14 @@ describe('Event Controller', () => {
         length: '90',
       };
 
-      (service.updateEvent as jest.Mock).mockResolvedValue(fakeEvent);
+      (service.getEvent as jest.Mock).mockResolvedValue(fakeEventForAccess);
+      (service.updateEvent as jest.Mock).mockResolvedValue(fakeUpdatedEvent);
 
       await eventController.editEvent(req as Request, res as Response);
 
       expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/json');
+      expect(service.getEvent).toHaveBeenCalledWith('123');
+      expect(verifyAccess).toHaveBeenCalledWith(req.cookies.token, fakeEventForAccess.userId, res);
       expect(service.updateEvent).toHaveBeenCalledWith(
         '123',
         'Updated Event',
@@ -207,7 +225,7 @@ describe('Event Controller', () => {
         new Date(req.body.startDate),
         90
       );
-      expect(res.json).toHaveBeenCalledWith(fakeEvent);
+      expect(res.json).toHaveBeenCalledWith(fakeUpdatedEvent);
     });
 
     it('should call errorHandler on error', async () => {
@@ -220,7 +238,7 @@ describe('Event Controller', () => {
         length: '90',
       };
 
-      (service.updateEvent as jest.Mock).mockRejectedValue(error);
+      (service.getEvent as jest.Mock).mockRejectedValue(error);
 
       await eventController.editEvent(req as Request, res as Response);
 

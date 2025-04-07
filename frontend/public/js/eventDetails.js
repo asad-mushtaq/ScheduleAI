@@ -15,13 +15,14 @@ document.addEventListener("DOMContentLoaded", async function () {
     const eventLengthInput = document.getElementById("event-length-input");
     const eventNameInput = document.getElementById("event-name-input");
 
+    const dbManagerUrl = "http://localhost:8080/db_manager"
     const eventId = urlParams.get("eventId");
 
     let event = await getEvent();
 
     async function deleteEvent() {
     
-        await fetch(`http://localhost:8080/db_manager/v1/events/${eventId}`, {
+        await fetch(`${dbManagerUrl}/v1/events/${eventId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -46,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const length = eventLengthInput.value;
         const id = eventId;
 
-        await fetch('http://localhost:8080/db_manager/v1/events', {
+        await fetch(`${dbManagerUrl}/v1/events`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -74,7 +75,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const clickedElem = click.target;
         const arr = clickedElem.id.split("-");
         const taskId = arr[0];
-        await fetch(`http://localhost:8080/db_manager/v1/tasks/${taskId}`, {
+        await fetch(`${dbManagerUrl}/v1/tasks/${taskId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -124,7 +125,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.log(clickedElem);
         const completed = clickedElem.checked
         console.log(completed);
-        await fetch('http://localhost:8080/db_manager/v1/tasks', {
+        await fetch(`${dbManagerUrl}/v1/tasks`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -146,7 +147,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function getEvent() {
         let newEvent = null;
 
-        const response = await fetch(`http://localhost:8080/db_manager/v1/events/${eventId}`, {
+        const response = await fetch(`${dbManagerUrl}/v1/events/${eventId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -160,7 +161,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const data = await response.json();
         newEvent = data; 
     
-        const taskResponse = await fetch(`http://localhost:8080/db_manager/v1/events/${eventId}/tasks`, {
+        const taskResponse = await fetch(`${dbManagerUrl}/v1/events/${eventId}/tasks`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -183,9 +184,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         return newEvent;
     }
 
-
-    renderTasksForEvent(event);
-
     async function addTaskToEvent() {
         if (!event) {
             alert("No event selected.");
@@ -197,7 +195,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const description = taskDescription.value;
         const name = taskName.value;
 
-        await fetch('http://localhost:8080/db_manager/v1/tasks', {
+        await fetch(`${dbManagerUrl}/v1/tasks`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -238,6 +236,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
         }
     }
+
+    renderTasksForEvent(event);
 
     addTaskBtn.addEventListener("click", addTaskToEvent);
     deleteEventBtn.addEventListener("click", deleteEvent);

@@ -1,3 +1,5 @@
+const dbManagerUrl = "http://localhost:8080/db_manager"
+
 function clearSession() {
     localStorage.removeItem("userId");
     window.location.replace("/login");
@@ -10,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const userId = JSON.parse(localStorage.getItem("userId"));
     if (userId != null && userId != undefined) {
-        await fetch(`http://localhost:8080/db_manager/v1/users/${userId}`, {
+        await fetch(`${dbManagerUrl}/v1/users/${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -29,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         })
 
-        await fetch(`http://localhost:8080/db_manager/v1/users/${userId}/subscription`, {
+        await fetch(`${dbManagerUrl}/v1/users/${userId}/subscription`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'

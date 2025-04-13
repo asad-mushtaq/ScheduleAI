@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -f /installran ]; then
-    echo "File not found!"
+    echo "Running first time setup."
 
     export DEBIAN_FRONTEND="noninteractive"
     debconf-set-selections <<< "mariadb-server mysql-server/root_password password $ROOTPASSWORD"

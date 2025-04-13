@@ -3,6 +3,8 @@
 
 ## Steps to run this web application locally
 
+0. Ensure you're using Linux or another Unix like OS, otherwise you have to ensure the .sh/shell files in each microservice folder use the LF end of line sequence format, and not CRLF.
+
 1. Create local .env file with correct values set in the root directory of project (same directory as docker-compose.yml).
 example .env file:
 ```
@@ -41,5 +43,5 @@ OPENAI_API_KEY=<Valid OpenAI API key>
 
 3. Run `docker compose up` to start the project.
 
-4. When "Example app on url: http://FRONTEND_HOST:FRONTEND_PORT" shows up in the console, it means the application is ready, just go to that URL on web browser and the Web Application should work.
+4. When "Example app on url: http://FRONTEND_HOST:FRONTEND_PORT" shows up in the console with the values, as set in the .env file, it means the application is ready, just go to that URL on web browser and the Web Application should just work.
 Comp 7082 Project: Team 7

@@ -6,10 +6,6 @@ RUN apt-get clean
 RUN apt-get update --fix-missing 
 RUN apt-get upgrade -y
 
-
-
-EXPOSE 3306
-
 LABEL version="1.0"
 LABEL description="ScheduleAI MariaDB Server."
 

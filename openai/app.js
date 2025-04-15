@@ -5,11 +5,16 @@ require('dotenv').config();
 // Initialize Express app
 const app = express();
 const port = process.env.OPENAI_PORT;
+const err = false;
 
 // Initialize OpenAI with the API key
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+try {
+    const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+    });
+} catch (error) {
+    err = true;
+}
 
 // Middleware to parse incoming JSON requests
 app.use(express.json());
@@ -38,6 +43,10 @@ app.post('/', async (req, res) => {
 
         if (!prompt) {
             return res.status(400).json({ error: `User query not found.` });
+        }
+
+        if (err) {
+            return res.status(401).json({ error: `OpenAI API access key missing or invalid.` });
         }
 
         // Log to check what we received

@@ -5,7 +5,7 @@ require('dotenv').config();
 // Initialize Express app
 const app = express();
 const port = process.env.OPENAI_PORT;
-const err = false;
+let err = false;
 
 // Initialize OpenAI with the API key
 try {

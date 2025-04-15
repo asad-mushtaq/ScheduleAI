@@ -1,10 +1,10 @@
 import { stringToInteger } from "../../services/converters.js";
 
-test('string 3 should be int 3 ', () => {
+test('valid number number conversion', () => {
     expect(stringToInteger("3")).toBe(3);
 });
 
-test('string 3 should be int 3 ', () => {
+test('check for valid non-float number', () => {
     try {
         stringToInteger("3.3");
         expect(true).toBe(false)
@@ -14,7 +14,7 @@ test('string 3 should be int 3 ', () => {
     }
 });
 
-test('string 3 should be int 3 ', () => {
+test('word is not a number ', () => {
     try {
         stringToInteger("hello");
         expect(true).toBe(false)

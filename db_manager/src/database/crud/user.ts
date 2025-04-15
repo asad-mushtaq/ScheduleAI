@@ -15,14 +15,14 @@ import { Payment } from "../../models/payment.js";
 export async function getAllUsers() {
     let users: Array<User> = [];
     const [dbUsers] = await pool.execute<RowDataPacket[]>(
-      'SELECT * FROM user'
+        'SELECT * FROM user'
     );
     dbUsers.forEach(dbUser => {
-      const user: User = new User(dbUser.id, dbUser.first_name, dbUser.last_name, dbUser.email, dbUser.password, dbUser.admin);
-      users.push(user);
+        const user: User = new User(dbUser.id, dbUser.first_name, dbUser.last_name, dbUser.email, dbUser.password, dbUser.admin);
+        users.push(user);
     });
     return users;
-  }
+}
 
 export async function getUser(id: number): Promise<User> {
     const [rows] = await pool.execute<RowDataPacket[]>('SELECT * FROM user WHERE id = ?', [id]);

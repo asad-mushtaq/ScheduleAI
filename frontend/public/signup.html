@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,31 +10,51 @@
 
 <style>
     .container {
-    background: #fff;
-    width: 300px;
-    margin-top: 10rem;
-    padding: 2rem;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        background: #fff;
+        display: grid;
+        width: 300px;
+        margin-top: 10rem;
+        padding: 2rem;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 0.5rem !important;
+    }
+
+    input {
+        width: 100%;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    p {
+        text-align: center;
+    }
+
+    button {
+        margin-left: auto;
+    }
 </style>
 
 <body>
     <nav>
         <a href="/">Welcome screen</a>
         <a href="signup">Sign Up</a>
-        <a href="login">Login</a>
+        <a href="login">Sign In</a>
     </nav>
-    
     <div id="signup-form" class="container">
         <h2>Sign Up</h2>
         <input type="text" id="signup-fullname" placeholder="Full Name">
         <input type="email" id="signup-email" placeholder="Email">
         <input type="password" id="signup-password" placeholder="Password">
         <button onclick="signUp()">Sign Up</button>
+        <input type="submit" hidden />
     </div>
-
+    <p>Already have an account? <a href="login">Sign In</a></p>
     <script src="js/session.js"></script>
     <script src="js/unprotected.js"></script>
 </body>
+
 </html>

@@ -1,4 +1,5 @@
-// Store users in localStorage
+const dbManagerUrl = "http://localhost:8080/db_manager"
+
 async function signUp() {
     const fullName = document.getElementById("signup-fullname").value;
     const email = document.getElementById("signup-email").value;
@@ -7,7 +8,7 @@ async function signUp() {
     const firstName = fullName.split(' ').slice(0, -1).join(' ');
     const lastName = fullName.split(' ').slice(-1).join(' ');
 
-    await fetch('http://localhost:8080/db_manager/v1/users', {
+    await fetch(`${dbManagerUrl}/v1/users`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=utf-8'
@@ -25,12 +26,11 @@ async function signUp() {
     })
 }
 
-// Handle Login
 async function login() {
     const email = document.getElementById("login-email").value;
     const password = document.getElementById("login-password").value;
 
-    const response = await fetch('http://localhost:8080/db_manager/v1/users/login', {
+    const response = await fetch(`${dbManagerUrl}/v1/users/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=utf-8'
@@ -48,13 +48,6 @@ async function login() {
             window.location.replace("/home");
         }
     })
-}
-
-// Logout
-function logout() {
-    localStorage.removeItem("userId");
-    alert("Logged out!");
-    window.location.replace("/");
 }
 
 

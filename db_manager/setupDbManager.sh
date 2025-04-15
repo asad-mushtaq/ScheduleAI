@@ -1,7 +1,7 @@
 #!/bin/bash
 cd ./db_manager
 if [ ! -f /setupran ]; then
-    echo "File not found!"
+    echo "Running first time setup."
 
     npm i
 

@@ -1,8 +1,6 @@
 server {
-    listen       ${NGINX_PORT};
-    listen  [::]:${NGINX_PORT};
-    server_name  ${NGINX_HOST};
-
+    listen       ${API_GATEWAY_PORT};
+    listen  [::]:${API_GATEWAY_PORT};
     #access_log  /var/log/nginx/host.access.log  main;
 
     location /db_manager/ {

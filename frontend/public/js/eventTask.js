@@ -14,25 +14,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const getFeedbackBtn = document.getElementById("get-feedback");
     const aiResponse = document.getElementById("ai-response");
     const userPrompt = document.getElementById("user-prompt");
+    const calendarEl = document.getElementById("calendar");
+
+    const dbManagerUrl = "http://localhost:8080/db_manager"
+    const openAiApiUrl = "http://localhost:8080/query"
 
     let events = [];
     let selectedEvent = null;
-
-    function getSession() {
-        return localStorage.getItem("userId");
-    }
-
-    function removeSession() {
-        localStorage.removeItem("userId");
-    }
-
-    if (typeof FullCalendar === "undefined") {
-        console.error("FullCalendar failed to load.");
-        alert("Error: FullCalendar is missing.");
-        return;
-    }
-
-    const calendarEl = document.getElementById("calendar");
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: "dayGridMonth",
         selectable: true,
@@ -46,12 +34,20 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
-    calendar.render();
+
+    function getSession() {
+        return localStorage.getItem("userId");
+    }
+
+    function removeSession() {
+        localStorage.removeItem("userId");
+        window.location.replace("/login");
+    }
 
     async function loadEvents() {
         const userId = getSession();
         try {
-            const response = await fetch(`http://localhost:8080/db_manager/v1/users/${userId}/events`, {
+            const response = await fetch(`${dbManagerUrl}/v1/users/${userId}/events`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8'
@@ -67,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             for (const event of events) {
-                const taskResponse = await fetch(`http://localhost:8080/db_manager/v1/events/${event.id}/tasks`, {
+                const taskResponse = await fetch(`${dbManagerUrl}/v1/events/${event.id}/tasks`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json; charset=utf-8'
@@ -94,8 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    loadEvents();
-
     async function createEvent() {
         const name = eventName.value;
         const description = eventDescription.value;
@@ -109,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const userId = getSession();
 
-        await fetch('http://localhost:8080/db_manager/v1/events', {
+        await fetch(`${dbManagerUrl}/v1/events`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -150,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const description = taskDescription.value;
         const name = taskName.value;
 
-        await fetch('http://localhost:8080/db_manager/v1/tasks', {
+        await fetch(`${dbManagerUrl}/v1/tasks`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -181,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const clickedElem = click.target;
         const arr = clickedElem.id.split("-");
         const taskId = arr[0];
-        await fetch(`http://localhost:8080/db_manager/v1/tasks/${taskId}`, {
+        await fetch(`${dbManagerUrl}/v1/tasks/${taskId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -236,7 +230,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const description = selectedTask.description;
         selectedTask.completed = clickedElem.checked;
         const completed = selectedTask.completed;
-        await fetch('http://localhost:8080/db_manager/v1/tasks', {
+        await fetch(`${dbManagerUrl}/v1/tasks`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -317,7 +311,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
         console.log(query)
     
-        await fetch('http://localhost:8080/query', {
+        await fetch(`${openAiApiUrl}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -337,6 +331,15 @@ document.addEventListener("DOMContentLoaded", function () {
         })
     }
 
+    if (typeof FullCalendar === "undefined") {
+        console.error("FullCalendar failed to load.");
+        alert("Error: FullCalendar is missing.");
+        return;
+    }
+
+    calendar.render();
+    loadEvents();
+    
     createEventBtn.addEventListener("click", createEvent);
     addTaskBtn.addEventListener("click", addTaskToEvent);
     viewEventDetailsBtn.addEventListener("click", openTaskDetailsPage);

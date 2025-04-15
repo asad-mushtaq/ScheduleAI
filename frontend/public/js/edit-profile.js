@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const passwordInput = document.getElementById("password");
     const form = document.getElementById("edit-profile-form");
 
+    const dbManagerUrl = "http://localhost:8080/db_manager"
     const userId = localStorage.getItem("userId");
 
     if (!userId) {
@@ -15,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch and populate existing user info
     try {
-        const res = await fetch(`http://localhost:8080/db_manager/v1/users/${userId}`, {
+        const res = await fetch(`${dbManagerUrl}/v1/users/${userId}`, {
             credentials: "include",
         });
 
@@ -44,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
 
         try {
-            const res = await fetch(`http://localhost:8080/db_manager/v1/users/${userId}`, {
+            const res = await fetch(`${dbManagerUrl}/v1/users/${userId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"

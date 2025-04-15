@@ -1,9 +1,9 @@
 CREATE TABLE
     IF NOT EXISTS user (
         id INT NOT NULL AUTO_INCREMENT,
-        first_name VARCHAR(20),
-        last_name VARCHAR(20),
-        email VARCHAR(50) NOT NULL UNIQUE,
+        first_name VARCHAR(100),
+        last_name VARCHAR(100),
+        email VARCHAR(100) NOT NULL UNIQUE,
         password VARCHAR(100) NOT NULL,
         admin BOOLEAN DEFAULT false NOT NULL,
         PRIMARY KEY (id)
@@ -12,7 +12,7 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS event (
         id INT NOT NULL AUTO_INCREMENT,
-        name VARCHAR(20) NOT NULL,
+        name VARCHAR(100) NOT NULL,
         description TEXT,
         start_date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
         length VARCHAR(100) NOT NULL,
@@ -26,8 +26,8 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS query (
         id INT NOT NULL AUTO_INCREMENT,
-        prompt VARCHAR(100),
-        response VARCHAR(100),
+        prompt TEXT,
+        response TEXT,
         date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
         user_id INT NOT NULL,
         PRIMARY KEY (id),
@@ -37,7 +37,7 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS task (
         id INT NOT NULL AUTO_INCREMENT,
-        name VARCHAR(20),
+        name VARCHAR(100),
         description TEXT,
         completed BOOLEAN DEFAULT false NOT NULL,
         event_id INT NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS subscription (
         id INT NOT NULL AUTO_INCREMENT,
-        name VARCHAR(20) NOT NULL UNIQUE,
+        name VARCHAR(100) NOT NULL UNIQUE,
         price_usd FLOAT,
         query_limit INT,
         PRIMARY KEY (id)
